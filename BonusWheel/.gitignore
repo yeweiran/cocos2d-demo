@@ -35,3 +35,6 @@ cocostudio/Backup
 cocostudio/Resources
 	
 # Others should Ignored
+/proj.android/app/.cxx
+/proj.android/app/.externalNativeBuild
+/proj.android/app/build
