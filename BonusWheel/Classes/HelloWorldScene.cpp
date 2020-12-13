@@ -47,73 +47,108 @@ bool HelloWorld::init()
     {
         return false;
     }
-
+    Director::getInstance()->getOpenGLView()->setDesignResolutionSize(360, 540, ResolutionPolicy::NO_BORDER );
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+    srand((unsigned)time(NULL));
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
-
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
+    auto centerPos = Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
+    spr_BG = Sprite::create("background.png");
+    spr_BG->setPosition(centerPos);
+    this->addChild(spr_BG, 1);
+    // Wheel BG, Wheel, Wheel Arrow sprites
+    spr_wheelBG = Sprite::create("wheel_border.png");
+    spr_BG->addChild(spr_wheelBG, 3);
+    spr_wheelBG->setPosition(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2);
+    spr_wheel = Sprite::create("wheel_sections_8.png");
+    spr_wheelBG->addChild(spr_wheel,-1);
+    spr_wheel->setPosition(spr_wheelBG->getContentSize().width / 2, spr_wheelBG->getContentSize().height / 2);
+    spr_arrow = Sprite::create("wheel_arrow.png");
+    spr_wheelBG->addChild(spr_arrow);
+    spr_arrow->setPosition(spr_wheelBG->getContentSize().width / 2, spr_wheelBG->getContentSize().height - 10);
+    // On Wheel Prizes sprites and texts
+    spr_prizes.assign(8, Sprite::create());
+    text_prizes.assign(8, Label::create());
+    spr_prizes[0] = Sprite::create("hammer.png");
+    text_prizes[0] = Label::createWithTTF("X1", "fonts/Marker Felt.ttf", font_size_prize);
+    spr_prizes[1] = Sprite::create("gem.png");
+    text_prizes[1] = Label::createWithTTF("X75", "fonts/Marker Felt.ttf", font_size_prize);
+    spr_prizes[2] = Sprite::create("brush.png");
+    text_prizes[2] = Label::createWithTTF("X1", "fonts/Marker Felt.ttf", font_size_prize);
+    spr_prizes[3] = Sprite::create("coin.png");
+    text_prizes[3] = Label::createWithTTF("X750", "fonts/Marker Felt.ttf", font_size_prize);
+    spr_prizes[4] = Sprite::create("hammer.png");
+    text_prizes[4] = Label::createWithTTF("X3", "fonts/Marker Felt.ttf", font_size_prize);
+    spr_prizes[5] = Sprite::create("gem.png");
+    text_prizes[5] = Label::createWithTTF("X35", "fonts/Marker Felt.ttf", font_size_prize);
+    spr_prizes[6] = Sprite::create("brush.png");
+    text_prizes[6] = Label::createWithTTF("X3", "fonts/Marker Felt.ttf", font_size_prize);
+    spr_prizes[7] = Sprite::create("heart.png");
+    text_prizes[7] = Label::createWithTTF("30min", "fonts/Marker Felt.ttf", font_size_prize);
+    for(int i = 0; i < 8; ++i){
+        spr_wheel->addChild(spr_prizes[i]);
+        spr_prizes[i]->addChild(text_prizes[i]);
+        text_prizes[i]->setTextColor(Color4B(0, 0, 0, 255));
+        text_prizes[i]->setPosition(spr_prizes[i]->getContentSize().width / 2,
+                spr_prizes[i]->getContentSize().height / 2 - 10);
+        float angle = (22.5 + 45 * i) * 3.1416 / 180;
+        int len = 80;
+        spr_prizes[i]->setPosition(spr_wheel->getContentSize().width / 2 - len * sin(angle),
+                spr_wheel->getContentSize().width / 2 + len * cos(angle));
+        spr_prizes[i]->setRotation(-(22.5 + 45 * i));
     }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
-    }
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
+    // Prize Sprite and text
+    spr_prize = Sprite::create("coin.png");
+    auto text_prize = Label::createWithTTF("X1", "fonts/Marker Felt.ttf", font_size_prize);
+    text_prize->setTextColor(Color4B(0, 0, 0, 255));
+    spr_prize->addChild(text_prize,1,"text_prize");
+    text_prize->setPosition(spr_prize->getContentSize().width / 2, spr_prize->getContentSize().height / 2 - 10);
+    spr_BG->addChild(spr_prize, 100, "spr_prize");
+    spr_prize->setPosition(Point(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2 + 120));
+    spr_prize->setScale(0.2);
+    spr_prize->setVisible(false);
+    // Play On Button
+    auto btn_draw = ui::Button::create("spin_button.png");
+    btn_draw->setTitleText("Play On");
+    btn_draw->setTitleFontName("arial.ttf");
+    btn_draw->setTitleFontSize(font_size_btn);
+    btn_draw->setTitleColor(Color3B(255,255,255));
+    spr_BG->addChild(btn_draw, 1, "btn_draw");
+    btn_draw->setPosition(Point(spr_BG->getContentSize().width / 2, 100));
+    btn_draw->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type){
+        switch (type) {
+            case ui::Widget::TouchEventType::BEGAN:
+                break;
+            case ui::Widget::TouchEventType::ENDED:
+                PlayOnBtnClicked();
+                //TestEmulateSpin(10000);
+                break;
+            default:
+                break;
+        }
+    });
+    // Claim Button
+    auto btn_claim = ui::Button::create("spin_button.png");
+    btn_claim->setTitleText("Claim");
+    btn_claim->setTitleFontName("arial.ttf");
+    btn_claim->setTitleFontSize(font_size_btn);
+    btn_claim->setTitleColor(Color3B(255,255,255));
+    spr_BG->addChild(btn_claim, 1, "btn_claim");
+    btn_claim->setPosition(Point(spr_BG->getContentSize().width / 2, 100));
+    btn_claim->setVisible(false);
+    btn_claim->setEnabled(false);
+    btn_claim->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type){
+        switch (type) {
+            case ui::Widget::TouchEventType::BEGAN:
+                break;
+            case ui::Widget::TouchEventType::ENDED:
+                ClaimBtnClicked();
+                break;
+            default:
+                break;
+        }
+    });
     return true;
 }
 
@@ -129,4 +164,72 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
+}
+
+void HelloWorld::PlayOnBtnClicked() {
+    auto btn_draw = spr_BG->getChildByName<ui::Button*>("btn_draw");
+    btn_draw->setVisible(false);
+    btn_draw->setEnabled(false);
+    DrawResult = Draw();
+    auto act_pullback = RotateBy::create(0.3, -5);
+    float angle = 22.5+ 45*DrawResult + 360 * 3 + 5;
+    auto act_spin = EaseExponentialOut::create(RotateBy::create(5,angle));
+    spr_wheel->runAction(Sequence::create(act_pullback, act_spin,
+            CallFunc::create(CC_CALLBACK_0(HelloWorld::ShowDrawResult, this)),nullptr));
+    CCLOG("cclog result: %d", DrawResult);
+}
+
+int HelloWorld::Draw() {
+    int res = rand() % 100, total = 0;
+    for(int i = 0; i < 8; ++i){
+        total+=PrizesChances[i];
+        if(res < total) return i;
+    }
+    return -1;
+}
+
+void HelloWorld::ShowDrawResult() {
+    spr_wheelBG->setVisible(false);
+    spr_wheel->setRotation(0);
+    auto btn_claim = spr_BG->getChildByName<ui::Button*>("btn_claim");
+    btn_claim->setVisible(true);
+    btn_claim->setEnabled(true);
+    auto act_scaleup = ScaleTo::create(1,2);
+    auto act_movedown = MoveBy::create(1, Point(0, -120));
+    spr_prize->setTexture(spr_prizes[DrawResult]->getTexture());
+    ((Label*)spr_prize->getChildByName("text_prize"))->setString(text_prizes[DrawResult]->getString());
+    spr_prize->setVisible(true);
+    spr_prize->runAction(act_scaleup);
+    spr_prize->runAction(act_movedown);
+}
+
+void HelloWorld::ClaimBtnClicked() {
+    auto btn_draw = spr_BG->getChildByName<ui::Button*>("btn_draw");
+    btn_draw->setVisible(true);
+    btn_draw->setEnabled(true);
+    auto btn_claim = spr_BG->getChildByName<ui::Button*>("btn_claim");
+    btn_claim->setVisible(false);
+    btn_claim->setEnabled(false);
+    spr_wheelBG->setVisible(true);
+    spr_prize->stopAllActions();
+    spr_prize->setPosition(Point(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2 + 120));
+    spr_prize->setScale(0.2);
+    spr_prize->setVisible(false);
+}
+
+void HelloWorld::TestEmulateSpin(int times) {
+    int res[8] = {0};
+    for(int i = 0; i < times; ++i){
+        ++res[Draw()];
+    }
+    CCLOG("cclog\nPrize:\t\tTimes"
+          "\nHammer 1X:\t\t%d"
+          "\nGem 75:\t\t%d"
+          "\nBrush 1X:\t\t%d"
+          "\nCoins 750:\t\t%d"
+          "\nHammer 3X:\t\t%d"
+          "\nGem 35:\t\t%d"
+          "\nBrush 3X:\t\t%d"
+          "\nLife 30 min:\t\t%d",
+          res[0], res[1], res[2], res[3], res[4], res[5], res[6], res[7]);
 }
