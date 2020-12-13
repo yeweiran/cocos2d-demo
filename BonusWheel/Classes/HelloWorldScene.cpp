@@ -100,13 +100,17 @@ bool HelloWorld::init()
     }
     // Prize Sprite and text
     spr_prize = Sprite::create("coin.png");
+    auto effect = Sprite::create("light_effect.png");
+    spr_prize->addChild(effect, -1, "spr_effect");
+    effect->setPosition(spr_prize->getContentSize().width / 2, spr_prize->getContentSize().height / 2);
+    effect->runAction(RepeatForever::create(RotateBy::create(5, 360)));
+    effect->setVisible(false);
     auto text_prize = Label::createWithTTF("X1", "fonts/Marker Felt.ttf", font_size_prize);
     text_prize->setTextColor(Color4B(0, 0, 0, 255));
     spr_prize->addChild(text_prize,1,"text_prize");
     text_prize->setPosition(spr_prize->getContentSize().width / 2, spr_prize->getContentSize().height / 2 - 10);
     spr_BG->addChild(spr_prize, 100, "spr_prize");
-    spr_prize->setPosition(Point(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2 + 120));
-    spr_prize->setScale(0.2);
+    spr_prize->setPosition(Point(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2 + 80));
     spr_prize->setVisible(false);
     // Play On Button
     auto btn_draw = ui::Button::create("spin_button.png");
@@ -194,13 +198,15 @@ void HelloWorld::ShowDrawResult() {
     auto btn_claim = spr_BG->getChildByName<ui::Button*>("btn_claim");
     btn_claim->setVisible(true);
     btn_claim->setEnabled(true);
-    auto act_scaleup = ScaleTo::create(1,2);
-    auto act_movedown = MoveBy::create(1, Point(0, -120));
+    auto act_scaleup = ScaleTo::create(0.5,2);
+    auto act_movedown = MoveBy::create(1, Point(0, -80));
     spr_prize->setTexture(spr_prizes[DrawResult]->getTexture());
     ((Label*)spr_prize->getChildByName("text_prize"))->setString(text_prizes[DrawResult]->getString());
     spr_prize->setVisible(true);
     spr_prize->runAction(act_scaleup);
-    spr_prize->runAction(act_movedown);
+    spr_prize->runAction(Sequence::create(act_movedown,CallFunc::create([&](){
+        spr_prize->getChildByName("spr_effect")->setVisible(true);
+    }),nullptr));
 }
 
 void HelloWorld::ClaimBtnClicked() {
@@ -214,6 +220,7 @@ void HelloWorld::ClaimBtnClicked() {
     spr_prize->stopAllActions();
     spr_prize->setPosition(Point(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2 + 120));
     spr_prize->setScale(0.2);
+    spr_prize->getChildByName("spr_effect")->setVisible(false);
     spr_prize->setVisible(false);
 }
 
