@@ -54,7 +54,7 @@ public:
     int DrawResult;
     int PrizesChances[8] = {20, 5, 20, 5, 10, 10, 10, 20};
 
-    int font_size_prize = 16;
+    int font_size_prize = 20;
     int font_size_btn = 24;
 
     void PlayOnBtnClicked();

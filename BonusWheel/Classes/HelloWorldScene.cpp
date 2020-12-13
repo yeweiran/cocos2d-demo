@@ -126,7 +126,7 @@ bool HelloWorld::init()
                 break;
             case ui::Widget::TouchEventType::ENDED:
                 PlayOnBtnClicked();
-                //TestEmulateSpin(10000);
+                TestEmulateSpin(10000);
                 break;
             default:
                 break;
@@ -176,7 +176,7 @@ void HelloWorld::PlayOnBtnClicked() {
     btn_draw->setEnabled(false);
     DrawResult = Draw();
     auto act_pullback = RotateBy::create(0.3, -5);
-    float angle = 22.5+ 45*DrawResult + 360 * 3 + 5;
+    float angle = 22.5+ 45*DrawResult + 360 * 5 + 5;
     auto act_spin = EaseExponentialOut::create(RotateBy::create(5,angle));
     spr_wheel->runAction(Sequence::create(act_pullback, act_spin,
             CallFunc::create(CC_CALLBACK_0(HelloWorld::ShowDrawResult, this)),nullptr));
@@ -229,14 +229,17 @@ void HelloWorld::TestEmulateSpin(int times) {
     for(int i = 0; i < times; ++i){
         ++res[Draw()];
     }
-    CCLOG("cclog\nPrize:\t\tTimes"
-          "\nHammer 1X:\t\t%d"
-          "\nGem 75:\t\t%d"
-          "\nBrush 1X:\t\t%d"
-          "\nCoins 750:\t\t%d"
-          "\nHammer 3X:\t\t%d"
-          "\nGem 35:\t\t%d"
-          "\nBrush 3X:\t\t%d"
-          "\nLife 30 min:\t\t%d",
-          res[0], res[1], res[2], res[3], res[4], res[5], res[6], res[7]);
+    std::stringstream ss;
+    ss << "cclog\nPrize:\t\tTimes\nHammer 1X:\t\t" << res[0]
+    << "\nGem 75:\t\t" << res[1] << "\nBrush 1X:\t\t" << res[2]
+    << "\nCoins 750:\t\t" << res[3] << "\nHammer 3X:\t\t" << res[4]
+    << "\nGem 35:\t\t" << res[5] << "\nBrush 3X:\t\t" << res[6] << "\nLife 30 min:\t\t" << res[7];
+    std::string log = ss.str();
+    cocos2d::log("%s", log.c_str());
+    auto fileUtils = FileUtils::getInstance();
+    std::string path = fileUtils->getWritablePath() + "BonusWheel_emulate_log.txt";
+    //std::string path = "/SDCARD/Android/data/BonusWheel_emulate_log.txt";
+    if(fileUtils->writeStringToFile(log, path)){
+        cocos2d::log("cclog Write to %s success!", path.c_str());
+    }
 }
