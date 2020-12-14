@@ -126,7 +126,7 @@ bool HelloWorld::init()
                 break;
             case ui::Widget::TouchEventType::ENDED:
                 PlayOnBtnClicked();
-                TestEmulateSpin(10000);
+                TestEmulateSpin(1000);
                 break;
             default:
                 break;
@@ -218,8 +218,8 @@ void HelloWorld::ClaimBtnClicked() {
     btn_claim->setEnabled(false);
     spr_wheelBG->setVisible(true);
     spr_prize->stopAllActions();
-    spr_prize->setPosition(Point(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2 + 120));
-    spr_prize->setScale(0.2);
+    spr_prize->setPosition(Point(spr_BG->getContentSize().width / 2, spr_BG->getContentSize().height / 2 + 80));
+    spr_prize->setScale(1);
     spr_prize->getChildByName("spr_effect")->setVisible(false);
     spr_prize->setVisible(false);
 }
