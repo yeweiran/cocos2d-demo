@@ -24,8 +24,8 @@ public:
     static GameManager* GetInstance();
     cocos2d::Size GetVisibleSize();
     cocos2d::Vec2 GetOrigin();
-    std::vector<cocos2d::Sprite*> spr_prizes;
-    std::vector<cocos2d::Label*> text_prizes;
+    std::vector<std::string> spr_prizes;
+    std::vector<std::string> text_prizes;
     void InitGame(cocos2d::Sprite *spr_BG);
     int GetNumOfPrizes();
     void ShowResultPrize();
@@ -36,14 +36,27 @@ private:
     static GameManager *Instance;
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;
-    BonusWheel *bonusWheel;
-    ResultPrize *resultPrize;
-    MyButton *btn_spin;
-    MyButton *btn_claim;
+    std::shared_ptr<BonusWheel> bonusWheel;
+    std::shared_ptr<ResultPrize> resultPrize;
+    std::shared_ptr<MyButton> btn_spin;
+    std::shared_ptr<MyButton> btn_claim;
     int prizeIndex;
     int numOfPrizes = 8;
-    int PrizesChances[8] = {20, 5, 20, 5, 10, 10, 10, 20};
+    std::vector<int> PrizesChances;
     int GetRandomPrize();
-
+private:
+    class Garbo
+    {
+    public:
+        ~Garbo()
+        {
+            if(GameManager::Instance != NULL)
+            {
+                delete GameManager::Instance;
+                GameManager::Instance = NULL;
+            }
+        }
+    };
+    static Garbo garbo;
 };
 #endif //PROJ_ANDROID_GAMEMANAGER_H

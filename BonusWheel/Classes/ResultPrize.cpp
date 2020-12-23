@@ -21,8 +21,8 @@ ResultPrize::ResultPrize(cocos2d::Sprite *spr_BG) {
 void ResultPrize::ShowResultPrize(int prizeIndex) {
     auto act_scaleup = ScaleTo::create(0.5,2);
     auto act_movedown = MoveBy::create(1, Point(0, -80));
-    spr_prize->setTexture(GameManager::GetInstance()->spr_prizes[prizeIndex]->getTexture());
-    ((Label*)spr_prize->getChildByName("text_prize"))->setString(GameManager::GetInstance()->text_prizes[prizeIndex]->getString());
+    spr_prize->setTexture(GameManager::GetInstance()->spr_prizes[prizeIndex]);
+    ((Label*)spr_prize->getChildByName("text_prize"))->setString(GameManager::GetInstance()->text_prizes[prizeIndex]);
     spr_prize->setVisible(true);
     spr_prize->runAction(act_scaleup);
     spr_prize->runAction(Sequence::create(act_movedown,CallFunc::create([&](){

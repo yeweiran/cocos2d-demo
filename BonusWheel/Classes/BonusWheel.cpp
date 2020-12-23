@@ -15,16 +15,16 @@ BonusWheel::BonusWheel(cocos2d::Sprite *spr_BG) {
     spr_arrow->setPosition(spr_wheelBG->getContentSize().width / 2, spr_wheelBG->getContentSize().height - 10);
     int numOfPrize = GameManager::GetInstance()->GetNumOfPrizes();
     for(int i = 0; i < numOfPrize; ++i){
-        spr_wheel->addChild(GameManager::GetInstance()->spr_prizes[i]);
-        GameManager::GetInstance()->spr_prizes[i]->addChild(GameManager::GetInstance()->text_prizes[i]);
-        GameManager::GetInstance()->text_prizes[i]->setTextColor(Color4B(0, 0, 0, 255));
-        GameManager::GetInstance()->text_prizes[i]->setPosition(GameManager::GetInstance()->spr_prizes[i]->getContentSize().width / 2,
-                                                                GameManager::GetInstance()->spr_prizes[i]->getContentSize().height / 2 - 10);
+        auto spr_prize = Sprite::create(GameManager::GetInstance()->spr_prizes[i]);
+        auto text_prize = Label::createWithTTF(GameManager::GetInstance()->text_prizes[i], "fonts/Marker Felt.ttf", font_size_prize);
+        spr_wheel->addChild(spr_prize);
+        spr_prize->addChild(text_prize);
+        text_prize->setTextColor(Color4B(0, 0, 0, 255));
+        text_prize->setPosition(spr_prize->getContentSize().width / 2,spr_prize->getContentSize().height / 2 - 10);
         float angle = (180 / numOfPrize + 360 / numOfPrize * i) * 3.1416 / 180;
         int len = 80;
-        GameManager::GetInstance()->spr_prizes[i]->setPosition(spr_wheel->getContentSize().width / 2 - len * sin(angle),
-                                   spr_wheel->getContentSize().width / 2 + len * cos(angle));
-        GameManager::GetInstance()->spr_prizes[i]->setRotation(-(180 / numOfPrize + 360 / numOfPrize * i));
+        spr_prize->setPosition(spr_wheel->getContentSize().width / 2 - len * sin(angle),spr_wheel->getContentSize().width / 2 + len * cos(angle));
+        spr_prize->setRotation(-(180 / numOfPrize + 360 / numOfPrize * i));
     }
 }
 

@@ -25,32 +25,19 @@ GameManager::GameManager() {
     visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
     origin = cocos2d::Director::getInstance()->getVisibleOrigin();
     // Init Prizes sprites and texts
-    spr_prizes.assign(8, Sprite::create());
-    text_prizes.assign(8, Label::create());
-    spr_prizes[0] = Sprite::create("hammer.png");
-    text_prizes[0] = Label::createWithTTF("X1", "fonts/Marker Felt.ttf", font_size_prize);
-    spr_prizes[1] = Sprite::create("gem.png");
-    text_prizes[1] = Label::createWithTTF("X75", "fonts/Marker Felt.ttf", font_size_prize);
-    spr_prizes[2] = Sprite::create("brush.png");
-    text_prizes[2] = Label::createWithTTF("X1", "fonts/Marker Felt.ttf", font_size_prize);
-    spr_prizes[3] = Sprite::create("coin.png");
-    text_prizes[3] = Label::createWithTTF("X750", "fonts/Marker Felt.ttf", font_size_prize);
-    spr_prizes[4] = Sprite::create("hammer.png");
-    text_prizes[4] = Label::createWithTTF("X3", "fonts/Marker Felt.ttf", font_size_prize);
-    spr_prizes[5] = Sprite::create("gem.png");
-    text_prizes[5] = Label::createWithTTF("X35", "fonts/Marker Felt.ttf", font_size_prize);
-    spr_prizes[6] = Sprite::create("brush.png");
-    text_prizes[6] = Label::createWithTTF("X3", "fonts/Marker Felt.ttf", font_size_prize);
-    spr_prizes[7] = Sprite::create("heart.png");
-    text_prizes[7] = Label::createWithTTF("30min", "fonts/Marker Felt.ttf", font_size_prize);
+    numOfPrizes = 8;
+    spr_prizes.assign({"hammer.png", "gem.png", "brush.png", "coin.png", "hammer.png", "gem.png", "brush.png", "heart.png"});
+    text_prizes.assign({"X1", "X75", "X1", "X750", "X3", "X35", "X3", "30min"});
+    PrizesChances.assign({20, 5, 20, 5, 10, 10, 10, 20});
 }
 
 void GameManager::InitGame(cocos2d::Sprite *spr_BG) {
     srand((unsigned)time(NULL));
-    bonusWheel = new BonusWheel(spr_BG);
-    resultPrize = new ResultPrize(spr_BG);
-    btn_spin = new MyButton(spr_BG, "Play On");
-    btn_claim = new MyButton(spr_BG, "Claim");
+
+    bonusWheel = std::make_shared<BonusWheel>(spr_BG);
+    resultPrize = std::make_shared<ResultPrize>(spr_BG);
+    btn_spin = std::make_shared<MyButton>(spr_BG, "Play On");
+    btn_claim = std::make_shared<MyButton>(spr_BG, "Claim");
     btn_claim->Enable(false);
 }
 
@@ -71,7 +58,7 @@ void GameManager::ClaimBtnClicked() {
 int GameManager::GetRandomPrize() {
     int res = rand() % 100, total = 0;
     for(int i = 0; i < numOfPrizes; ++i){
-        total+=PrizesChances[i];
+        total+= PrizesChances[i];
         if(res < total) return i;
     }
     return -1;
