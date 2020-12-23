@@ -27,6 +27,7 @@
 
 #include "cocos2d.h"
 #include "ui\CocosGUI.h"
+#include "GameManager.h"
 
 class HelloWorld : public cocos2d::Scene
 {
@@ -41,27 +42,7 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 
-    //
     cocos2d::Sprite *spr_BG;
-    cocos2d::Sprite *spr_wheelBG;
-    cocos2d::Sprite *spr_wheel;
-    cocos2d::Sprite *spr_arrow;
-    cocos2d::Sprite *spr_prize;
-
-    std::vector<cocos2d::Sprite*> spr_prizes;
-    std::vector<cocos2d::Label*> text_prizes;
-
-    int DrawResult;
-    int PrizesChances[8] = {20, 5, 20, 5, 10, 10, 10, 20};
-
-    int font_size_prize = 20;
-    int font_size_btn = 24;
-
-    void PlayOnBtnClicked();
-    void ClaimBtnClicked();
-    void ShowDrawResult();
-    void TestEmulateSpin(int times = 1000);
-    int Draw();
 };
 
 #endif // __HELLOWORLD_SCENE_H__
